@@ -44,10 +44,11 @@ Sistem ini memungkinkan pengguna untuk menyewa unit planet (contoh: Planet Mars,
 ![Database Schema](public/images/db-schema.png)
 
 Keterangan tabel:
-- **users:** id, name, email, password, role  
-- **categories:** id, name  
-- **units:** id, code, name, category_id, status  
-- **rentals:** id, user_id, unit_id, start_date, end_date, fine  
+- **users:** id, name, email, password, role, created_at, updated_at  
+- **categories:** id, name, created_at, updated_at  
+- **units:** id, code, name, status, created_at, updated_at  
+- **unit_categories:** unit_id, category_id → tabel penghubung (pivot) antara units dan categories  
+- **rentals:** id, user_id, unit_id, start_date, end_date, returned_at, fine, status, created_at, updated_at  
 
 ---
 
