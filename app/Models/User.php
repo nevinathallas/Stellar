@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -44,5 +45,37 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Check if user is admin
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Check if user is member
+     */
+    public function isMember(): bool
+    {
+        return $this->role === 'member';
+    }
+
+    /**
+     * Get rentals for this user
+     */
+    public function rentals()
+    {
+        return $this->hasMany(Rental::class);
+    }
+
+    /**
+     * Get active rentals (ongoing)
+     */
+    public function activeRentals()
+    {
+        return $this->hasMany(Rental::class)->where('status', 'ongoing');
     }
 }
