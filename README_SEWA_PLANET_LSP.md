@@ -8,7 +8,8 @@ Stellar
 
 ## 🪐 Nama Project
 **Website Sewa Planet**  
-Sistem peminjaman dan penyewaan unit planet berbasis web menggunakan Laravel 12, Bootstrap, dan MySQL.  
+Website ini dibuat untuk memenuhi ujian LSP Bidang Web Developer dengan tema Sistem Sewa Planet.
+Sistem ini memungkinkan pengguna untuk menyewa unit planet (contoh: Planet Mars, Saturnus, Jupiter, dsb.) dengan batas waktu tertentu, serta mengatur proses pengelolaan oleh admin. Sistem ini berbasis web menggunakan Laravel 12, Bootstrap, dan MySQL.  
 
 ---
 
