@@ -57,9 +57,12 @@
                             @endforeach
                         </div>
                     @else
-                        <div class="alert alert-info mb-0">
+                        <div class="alert alert-info text-center">
                             <i class="bi bi-info-circle"></i> Anda belum menyewa planet. 
-                            <a href="{{ route('home') }}" class="alert-link">Jelajahi planet sekarang!</a>
+                            <br><br>
+                            <a href="{{ route('home') }}" class="btn btn-primary">
+                                <i class="bi bi-rocket"></i> Jelajahi Planet Sekarang!
+                            </a>
                         </div>
                     @endif
 

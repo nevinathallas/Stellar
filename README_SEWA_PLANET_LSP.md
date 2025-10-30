@@ -27,7 +27,7 @@ Sistem ini memungkinkan pengguna untuk menyewa unit planet (contoh: Planet Mars,
    - Menghapus data unit, kategori, dan user (anggota).  
 9. **User hanya dapat meminjam maksimal 2 unit**.  
 10. **Pinjaman maksimal 5 hari.** Jika melebihi batas waktu, maka akan dikenakan **denda**.  
-11. **Hanya Admin** yang dapat melakukan **pengembalian unit** — anggota harus menghubungi Admin jika ingin mengembalikan unit.  
+11. **Hanya Admin** yang dapat melakukan **pengembalian unit** — anggota harus menghubungi Admin jika ingin mengembalikan unit. **Member dapat mengirim request pengembalian dengan upload bukti pembayaran, kemudian Admin memverifikasi dan mengembalikan unit.**  
 12. **Admin dapat melihat daftar unit yang sedang dipinjam.**  
 13. **User hanya dapat melihat daftar unit yang dipinjam olehnya sendiri.**  
 14. **Admin dapat melihat dan mencetak riwayat peminjaman unit dari user (anggota).**  

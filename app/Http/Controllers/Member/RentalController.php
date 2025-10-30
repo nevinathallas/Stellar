@@ -90,7 +90,7 @@ class RentalController extends Controller
         $unit->update(['status' => 'rented']);
 
         return redirect()->route('member.dashboard')
-            ->with('success', 'Unit berhasil disewa! Silakan lakukan pembayaran.');
+            ->with('success', 'Planet berhasil disewa! Gunakan planet sesuai durasi yang dipilih. Kembalikan sebelum jatuh tempo untuk menghindari denda.');
     }
 
     /**
@@ -105,5 +105,48 @@ class RentalController extends Controller
 
         $rental->load('unit.categories');
         return view('member.rentals.show', compact('rental'));
+    }
+
+    /**
+     * Handle member self-return with payment proof
+     */
+    public function return(Request $request, Rental $rental)
+    {
+        // Make sure user can only return their own rental
+        if ($rental->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        // Check if rental is still ongoing
+        if (!$rental->isOngoing()) {
+            return redirect()->back()
+                ->with('error', 'Rental ini sudah dikembalikan atau tidak dapat dikembalikan!');
+        }
+
+        // Check if already has pending return request
+        if ($rental->hasPendingReturnRequest()) {
+            return redirect()->back()
+                ->with('info', 'Request pengembalian Anda sudah dikirim. Menunggu verifikasi admin.');
+        }
+
+        // Validate payment proof
+        $validated = $request->validate([
+            'payment_proof' => 'required|image|mimes:jpeg,jpg,png|max:2048',
+            'notes' => 'nullable|string|max:500',
+        ]);
+
+        // Store payment proof image
+        $path = $request->file('payment_proof')->store('payment_proofs', 'public');
+
+        // Save return request (NOT changing status yet, waiting for admin verification)
+        $rental->update([
+            'payment_proof' => $path,
+            'notes' => $validated['notes'] ?? null,
+            'return_requested_at' => now(),
+            'return_request_status' => false, // false = menunggu verifikasi admin
+        ]);
+
+        return redirect()->route('member.rentals.show', $rental)
+            ->with('success', 'Request pengembalian berhasil dikirim! Admin akan memverifikasi pembayaran Anda.');
     }
 }

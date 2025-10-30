@@ -87,9 +87,12 @@
             </div>
         </div>
     @else
-        <div class="alert alert-info">
+        <div class="alert alert-info text-center">
             <i class="bi bi-info-circle"></i> Anda belum memiliki riwayat penyewaan. 
-            <a href="{{ route('home') }}" class="alert-link">Mulai sewa planet sekarang!</a>
+            <br><br>
+            <a href="{{ route('home') }}" class="btn btn-primary">
+                <i class="bi bi-rocket"></i> Mulai Sewa Planet Sekarang!
+            </a>
         </div>
     @endif
 </div>

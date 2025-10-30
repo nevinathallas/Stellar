@@ -17,7 +17,12 @@ class DashboardController extends Controller
         $totalMembers = User::where('role', 'member')->count();
         $totalCategories = Category::count();
         $activeRentals = Rental::where('status', 'ongoing')->count();
-        $overdueRentals = Rental::where('status', 'overdue')->count();
+        
+        // Hitung rental yang telat (ongoing tapi lewat due date)
+        $overdueRentals = Rental::where('status', 'ongoing')
+            ->whereNotNull('end_date')
+            ->whereDate('end_date', '<', now())
+            ->count();
         
         $recentRentals = Rental::with(['user', 'unit'])
             ->latest()

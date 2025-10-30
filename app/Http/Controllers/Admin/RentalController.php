@@ -7,6 +7,7 @@ use App\Models\Rental;
 use App\Models\Unit;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class RentalController extends Controller
 {
@@ -97,19 +98,27 @@ class RentalController extends Controller
         $returnedAt = Carbon::now();
         $fine = $rental->calculateFine();
 
-        // Update rental
+        // Update rental - mark as returned and verify return request
         $rental->update([
             'returned_at' => $returnedAt,
             'fine' => $fine,
-            'status' => 'returned'
+            'status' => 'returned',
+            'return_request_status' => true, // Mark request as verified by admin
         ]);
 
         // Update unit status to available
         $rental->unit->update(['status' => 'available']);
 
+        $successMessage = 'Unit berhasil dikembalikan! ';
+        
+        if ($rental->hasPendingReturnRequest() || $rental->return_requested_at) {
+            $successMessage .= 'Request member telah diverifikasi. ';
+        }
+        
+        $successMessage .= ($fine > 0 ? 'Denda: Rp ' . number_format($fine, 0, ',', '.') : 'Tidak ada denda.');
+
         return redirect()->route('admin.rentals.index')
-            ->with('success', 'Unit berhasil dikembalikan! ' . 
-                ($fine > 0 ? 'Denda: Rp ' . number_format($fine, 0, ',', '.') : 'Tidak ada denda.'));
+            ->with('success', $successMessage);
     }
 
     /**
@@ -147,5 +156,22 @@ class RentalController extends Controller
 
         return redirect()->route('admin.rentals.index')
             ->with('success', 'Data rental berhasil dihapus!');
+    }
+
+    /**
+     * Generate PDF invoice for rental
+     */
+    public function printInvoice(Rental $rental)
+    {
+        $rental->load('user', 'unit.categories');
+        
+        // Calculate prices
+        $rentalPrice = $rental->unit->price_per_day * $rental->duration_days;
+        $fine = $rental->fine > 0 ? $rental->fine : ($rental->status == 'ongoing' ? $rental->calculateFine() : 0);
+        $total = $rentalPrice + $fine;
+        
+        $pdf = Pdf::loadView('admin.rentals.invoice', compact('rental', 'rentalPrice', 'fine', 'total'));
+        
+        return $pdf->download('invoice-rental-' . $rental->id . '.pdf');
     }
 }

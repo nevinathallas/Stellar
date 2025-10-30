@@ -45,6 +45,66 @@
             <span class="badge bg-secondary">{{ $rental->duration_days ?? '-' }} hari</span>
         </p>
 
+        {{-- Request Pengembalian dari Member --}}
+        @if($rental->hasPendingReturnRequest())
+            <hr>
+            <div class="alert alert-warning border-warning">
+                <h6 class="alert-heading">
+                    <i class="bi bi-bell-fill"></i> Request Pengembalian dari Member
+                </h6>
+                <p class="mb-2">
+                    <strong>Waktu Request:</strong> {{ $rental->return_requested_at->format('d F Y, H:i') }} WIB
+                </p>
+                
+                @if($rental->payment_proof)
+                    <div class="mb-2">
+                        <strong>Bukti Pembayaran:</strong><br>
+                        <a href="{{ asset('storage/' . $rental->payment_proof) }}" target="_blank" class="btn btn-sm btn-primary mt-2">
+                            <i class="bi bi-image"></i> Lihat Bukti Pembayaran
+                        </a>
+                    </div>
+                @endif
+                
+                @if($rental->notes)
+                    <div class="mb-2">
+                        <strong>Catatan dari Member:</strong><br>
+                        <div class="bg-light p-2 rounded border mt-1">
+                            <em>"{{ $rental->notes }}"</em>
+                        </div>
+                    </div>
+                @endif
+
+                <div class="mt-3">
+                    <strong>Total Pembayaran yang Harus Dibayar Member:</strong><br>
+                    <table class="table table-sm table-borderless mb-0 mt-1">
+                        <tr>
+                            <td width="150">Biaya Sewa:</td>
+                            <td class="text-end">Rp {{ number_format($rental->unit->price_per_day * $rental->duration_days, 0, ',', '.') }}</td>
+                        </tr>
+                        @if($rental->calculateDaysLate() > 0)
+                            <tr class="text-danger">
+                                <td>Denda ({{ $rental->calculateDaysLate() }} hari):</td>
+                                <td class="text-end">Rp {{ number_format($rental->calculateFine(), 0, ',', '.') }}</td>
+                            </tr>
+                        @endif
+                        <tr class="fw-bold border-top">
+                            <td>TOTAL:</td>
+                            <td class="text-end text-primary">
+                                Rp {{ number_format(($rental->unit->price_per_day * $rental->duration_days) + $rental->calculateFine(), 0, ',', '.') }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="alert alert-info mb-0 mt-3">
+                    <small>
+                        <i class="bi bi-info-circle"></i> 
+                        Member menunggu verifikasi dari Admin untuk mengembalikan planet.
+                    </small>
+                </div>
+            </div>
+        @endif
+
         @if($rental->status == 'returned')
             <hr>
             <h6 class="text-muted mb-2">Informasi Pengembalian</h6>

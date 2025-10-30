@@ -5,9 +5,14 @@
     <div class="card shadow">
         <div class="card-header bg-primary d-flex justify-content-between align-items-center">
             <h4 class="mb-0 text-white"><i class="bi bi-calendar-check"></i> Daftar Semua Rental</h4>
-            <a href="{{ route('admin.rentals.ongoing') }}" class="btn btn-light btn-sm">
-                <i class="bi bi-clock"></i> Rental Aktif
-            </a>
+            <div>
+                <a href="{{ route('admin.rentals.history') }}" class="btn btn-light btn-sm me-2">
+                    <i class="bi bi-clock-history"></i> Riwayat & Cetak
+                </a>
+                <a href="{{ route('admin.rentals.ongoing') }}" class="btn btn-light btn-sm">
+                    <i class="bi bi-clock"></i> Rental Aktif
+                </a>
+            </div>
         </div>
         <div class="card-body">
             <!-- Filters -->
@@ -81,7 +86,15 @@
                                         @if($rental->status == 'ongoing' && $rental->due_date->isPast())
                                             <br><small class="text-danger">
                                                 <i class="bi bi-exclamation-triangle"></i> 
-                                                {{ $rental->due_date->diffInDays(now()) }} hari terlambat
+                                                @php
+                                                    $diffInHours = $rental->due_date->diffInHours(now());
+                                                    if ($diffInHours < 24) {
+                                                        echo $diffInHours . ' jam terlambat';
+                                                    } else {
+                                                        $diffInDays = floor($diffInHours / 24);
+                                                        echo $diffInDays . ' hari terlambat';
+                                                    }
+                                                @endphp
                                             </small>
                                         @endif
                                     @else

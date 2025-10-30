@@ -10,12 +10,12 @@
                 @if($rental->due_date && $rental->due_date->isPast())
                     <i class="bi bi-exclamation-triangle fs-1"></i>
                     <h5 class="mt-2">TERLAMBAT</h5>
-                    <p class="mb-0">{{ $rental->due_date->diffInDays(now()) }} hari</p>
+                    <p class="mb-0">{{ $rental->calculateDaysLate() }} hari</p>
                 @else
                     <i class="bi bi-clock fs-1"></i>
                     <h5 class="mt-2">SEDANG SEWA</h5>
                     @if($rental->due_date)
-                        <p class="mb-0">Sisa {{ now()->diffInDays($rental->due_date) }} hari</p>
+                        <p class="mb-0">Sisa {{ (int) now()->diffInDays($rental->due_date) }} hari</p>
                     @endif
                 @endif
             </div>
@@ -40,6 +40,11 @@
                 <p class="mb-0">Unit sudah dikembalikan</p>
             </div>
         @endif
+
+        <!-- Print Invoice Button -->
+        <a href="{{ route('admin.rentals.print', $rental) }}" class="btn btn-info w-100 mb-2" target="_blank">
+            <i class="bi bi-printer"></i> Cetak Invoice PDF
+        </a>
 
         <!-- Back Button -->
         <a href="{{ route('admin.rentals.index') }}" class="btn btn-secondary w-100">

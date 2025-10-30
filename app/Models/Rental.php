@@ -15,14 +15,20 @@ class Rental extends Model
         'returned_at',
         'duration_days',
         'fine',
-        'status'
+        'status',
+        'payment_proof',
+        'notes',
+        'return_requested_at',
+        'return_request_status'
     ];
 
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
         'returned_at' => 'datetime',
-        'fine' => 'decimal:2'
+        'return_requested_at' => 'datetime',
+        'fine' => 'decimal:2',
+        'return_request_status' => 'boolean'
     ];
 
     /**
@@ -67,6 +73,14 @@ class Rental extends Model
     }
 
     /**
+     * Check if rental has pending return request
+     */
+    public function hasPendingReturnRequest(): bool
+    {
+        return $this->return_requested_at !== null && $this->return_request_status === false;
+    }
+
+    /**
      * Check if rental is ongoing
      */
     public function isOngoing(): bool
@@ -96,19 +110,24 @@ class Rental extends Model
     public function calculateDaysLate(): int
     {
         if ($this->returned_at) {
+            // Sudah dikembalikan - hitung telat dari end_date ke returned_at
             $endDate = Carbon::parse($this->end_date);
             $returnedDate = Carbon::parse($this->returned_at);
             
             if ($returnedDate->greaterThan($endDate)) {
-                return $returnedDate->diffInDays($endDate);
+                return $endDate->diffInDays($returnedDate); // ✅ Fixed: endDate ke returnedDate
             }
         } else {
-            // Still ongoing, check if overdue
+            // Masih ongoing - hitung telat dari end_date ke hari ini
+            if (!$this->end_date) {
+                return 0;
+            }
+            
             $endDate = Carbon::parse($this->end_date);
             $today = Carbon::today();
             
             if ($today->greaterThan($endDate)) {
-                return $today->diffInDays($endDate);
+                return $endDate->diffInDays($today); // ✅ Fixed: endDate ke today
             }
         }
         

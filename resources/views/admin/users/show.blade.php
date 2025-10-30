@@ -86,7 +86,20 @@
                             <small class="text-muted">Selesai</small>
                         </div>
                         <div class="col-6">
-                            <h3 class="text-danger mb-0">Rp {{ number_format($user->rentals->sum('fine'), 0, ',', '.') }}</h3>
+                            <h3 class="text-danger mb-0">
+                                Rp {{ number_format(
+                                    $user->rentals->sum(function($rental) {
+                                        // Kalau sudah ada fine tersimpan, pakai itu
+                                        if ($rental->fine > 0) {
+                                            return $rental->fine;
+                                        }
+                                        // Kalau ongoing dan telat, hitung real-time
+                                        if ($rental->status == 'ongoing' && $rental->calculateDaysLate() > 0) {
+                                            return $rental->calculateFine();
+                                        }
+                                        return 0;
+                                    }), 0, ',', '.') }}
+                            </h3>
                             <small class="text-muted">Total Denda</small>
                         </div>
                     </div>
@@ -152,8 +165,13 @@
                                         </td>
                                         <td>
                                             @if($rental->fine > 0)
+                                                {{-- Denda sudah tersimpan (rental returned) --}}
                                                 <span class="text-danger">Rp {{ number_format($rental->fine, 0, ',', '.') }}</span>
+                                            @elseif($rental->status == 'ongoing' && $rental->calculateDaysLate() > 0)
+                                                {{-- Rental ongoing tapi telat - hitung real-time --}}
+                                                <span class="text-danger">Rp {{ number_format($rental->calculateFine(), 0, ',', '.') }}</span>
                                             @else
+                                                {{-- Tidak ada denda --}}
                                                 <span class="text-muted">-</span>
                                             @endif
                                         </td>

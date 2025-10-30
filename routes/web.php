@@ -39,6 +39,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/rentals/ongoing', [AdminRentalController::class, 'ongoing'])->name('rentals.ongoing');
     Route::get('/rentals/history', [AdminRentalController::class, 'history'])->name('rentals.history');
     Route::post('/rentals/{rental}/return', [AdminRentalController::class, 'return'])->name('rentals.return');
+    Route::get('/rentals/{rental}/print', [AdminRentalController::class, 'printInvoice'])->name('rentals.print');
     Route::post('/rentals/update-overdue', [AdminRentalController::class, 'updateOverdue'])->name('rentals.updateOverdue');
     Route::resource('rentals', AdminRentalController::class)->except(['create', 'store', 'edit', 'update']);
 });
@@ -52,6 +53,7 @@ Route::middleware(['auth', 'member'])->prefix('member')->name('member.')->group(
     Route::get('/rentals/create/{unit}', [MemberRentalController::class, 'create'])->name('rentals.create');
     Route::post('/rentals', [MemberRentalController::class, 'store'])->name('rentals.store');
     Route::get('/rentals/{rental}', [MemberRentalController::class, 'show'])->name('rentals.show');
+    Route::put('/rentals/{rental}/return', [MemberRentalController::class, 'return'])->name('rentals.return');
 });
 
 require __DIR__.'/auth.php';
