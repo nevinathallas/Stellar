@@ -26,6 +26,31 @@ class Rental extends Model
     ];
 
     /**
+     * Accessor untuk due_date (alias dari end_date)
+     * Agar view tetap bisa pakai $rental->due_date
+     */
+    public function getDueDateAttribute()
+    {
+        return $this->end_date;
+    }
+
+    /**
+     * Accessor untuk rental_date (alias dari start_date)
+     */
+    public function getRentalDateAttribute()
+    {
+        return $this->start_date;
+    }
+
+    /**
+     * Accessor untuk return_date (alias dari returned_at)
+     */
+    public function getReturnDateAttribute()
+    {
+        return $this->returned_at;
+    }
+
+    /**
      * Get the user (member) who rents
      */
     public function user()

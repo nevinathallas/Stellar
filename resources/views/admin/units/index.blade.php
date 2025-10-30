@@ -86,7 +86,7 @@
                 </div>
 
                 <div class="mt-3">
-                    {{ $units->links() }}
+                    {{ $units->appends(['search' => $search])->links() }}
                 </div>
             @else
                 <div class="alert alert-info mb-0">

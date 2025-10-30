@@ -42,6 +42,7 @@ class UnitController extends Controller
         $validated = $request->validate([
             'code' => 'required|string|max:255|unique:units,code',
             'name' => 'required|string|max:255',
+            'image_url' => 'nullable|url|max:500',
             'price_per_day' => 'required|numeric|min:0',
             'status' => 'required|in:available,rented',
             'categories' => 'required|array|min:1',
@@ -51,6 +52,7 @@ class UnitController extends Controller
         $unit = Unit::create([
             'code' => $validated['code'],
             'name' => $validated['name'],
+            'image_url' => $validated['image_url'] ?? null,
             'price_per_day' => $validated['price_per_day'],
             'status' => $validated['status'],
         ]);
@@ -87,6 +89,7 @@ class UnitController extends Controller
         $validated = $request->validate([
             'code' => 'required|string|max:255|unique:units,code,' . $unit->id,
             'name' => 'required|string|max:255',
+            'image_url' => 'nullable|url|max:500',
             'price_per_day' => 'required|numeric|min:0',
             'status' => 'required|in:available,rented',
             'categories' => 'required|array|min:1',
@@ -96,6 +99,7 @@ class UnitController extends Controller
         $unit->update([
             'code' => $validated['code'],
             'name' => $validated['name'],
+            'image_url' => $validated['image_url'] ?? null,
             'price_per_day' => $validated['price_per_day'],
             'status' => $validated['status'],
         ]);

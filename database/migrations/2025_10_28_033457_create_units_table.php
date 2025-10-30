@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('code')->unique(); // kode unit wajib unik
             $table->string('name'); // nama boleh sama
+            $table->string('image_url')->nullable(); // URL gambar planet
             $table->decimal('price_per_day', 10, 2)->default(0); // harga sewa per hari
             $table->enum('status', ['available', 'rented'])->default('available');
             $table->timestamps();

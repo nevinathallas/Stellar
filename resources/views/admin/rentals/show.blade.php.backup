@@ -1,0 +1,299 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
+    <div class="row">
+        <!-- Rental Details -->
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-info">
+                    <h4 class="mb-0 text-white"><i class="bi bi-file-text"></i> Detail Rental</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted mb-2">Informasi Member</h6>
+                            <p class="mb-1"><strong>Nama:</strong> {{ $rental->user->name }}</p>
+                            <p class="mb-1"><strong>Email:</strong> {{ $rental->user->email }}</p>
+                            <p class="mb-0">
+                                <strong>Role:</strong> 
+                                @if($rental->user->role == 'admin')
+                                    <span class="badge bg-danger">Admin</span>
+                                @else
+                                    <span class="badge bg-primary">Member</span>
+                                @endif
+                            </p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted mb-2">Informasi Planet</h6>
+                            <p class="mb-1"><strong>Nama:</strong> {{ $rental->unit->name }}</p>
+                            <p class="mb-1"><strong>Kode:</strong> {{ $rental->unit->code }}</p>
+                            <p class="mb-0">
+                                <strong>Status:</strong> 
+                                @if($rental->unit->status == 'available')
+                                    <span class="badge bg-success">Tersedia</span>
+                                @else
+                                    <span class="badge bg-danger">Disewa</span>
+                                @endif
+                            </p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted mb-2">Tanggal Rental</h6>
+                            <p class="mb-1"><strong>Tanggal Sewa:</strong> 
+                                @if($rental->rental_date)
+                                    {{ $rental->rental_date->format('d F Y') }}
+                                @else
+                                    -
+                                @endif
+                            </p>
+                            <p class="mb-1"><strong>Jatuh Tempo:</strong> 
+                                @if($rental->due_date)
+                                    {{ $rental->due_date->format('d F Y') }}
+                                @else
+                                    -
+                                @endif
+                            </p>
+                            <p class="mb-0">
+                                <strong>Durasi:</strong> 
+                                <span class="badge bg-secondary">{{ $rental->duration_days ?? '-' }} hari</span>
+                            </p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted mb-2">Status Pengembalian</h6>
+                            @if($rental->status == 'ongoing')
+                                <p class="mb-1">
+                                    <strong>Status:</strong> 
+                                    @if($rental->due_date && $rental->due_date->isPast())
+                                        <span class="badge bg-danger">Terlambat</span>
+                                    @else
+                                        <span class="badge bg-warning">Sedang Sewa</span>
+                                    @endif
+                                </p>
+                                @if($rental->due_date)
+                                    @if($rental->due_date->isPast())
+                                        <p class="mb-1">
+                                            <strong>Keterlambatan:</strong> 
+                                            <span class="text-danger fw-bold">{{ $rental->due_date->diffInDays(now()) }} hari</span>
+                                        </p>
+                                    @else
+                                        <p class="mb-1">
+                                            <strong>Sisa Waktu:</strong> 
+                                            <span class="text-success">{{ now()->diffInDays($rental->due_date) }} hari</span>
+                                        </p>
+                                    @endif
+                                @endif
+                                <p class="mb-0"><strong>Tanggal Kembali:</strong> <span class="text-muted">Belum dikembalikan</span></p>
+                            @else
+                                <p class="mb-1">
+                                    <strong>Status:</strong> 
+                                    <span class="badge bg-success">Selesai</span>
+                                </p>
+                                <p class="mb-0">
+                                    <strong>Tanggal Kembali:</strong> 
+                                    {{ $rental->return_date->format('d F Y') }}
+                                </p>
+                            @endif
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Fine Information -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h6 class="text-muted mb-2">Informasi Denda</h6>
+                            @if($rental->status == 'ongoing' && $rental->due_date && $rental->due_date->isPast())
+                                <div class="alert alert-danger">
+                                    <h5 class="mb-2">
+                                        <i class="bi bi-exclamation-triangle"></i> 
+                                        Denda Keterlambatan
+                                    </h5>
+                                    <p class="mb-1">
+                                        Rental ini terlambat <strong>{{ $rental->due_date->diffInDays(now()) }} hari</strong>
+                                    </p>
+                                    <p class="mb-0">
+                                        <strong>Total Denda:</strong> 
+                                        <span class="fs-5">Rp {{ number_format($rental->due_date->diffInDays(now()) * 100000, 0, ',', '.') }}</span>
+                                        <br>
+                                        <small class="text-muted">(Rp 100.000 per hari)</small>
+                                    </p>
+                                </div>
+                            @elseif($rental->fine > 0)
+                                <div class="alert alert-warning">
+                                    <p class="mb-1">
+                                        <strong>Denda yang dibayar:</strong> 
+                                        <span class="fs-5">Rp {{ number_format($rental->fine, 0, ',', '.') }}</span>
+                                    </p>
+                                    <small class="text-muted">Denda ini sudah dibayar saat pengembalian.</small>
+                                </div>
+                            @else
+                                <div class="alert alert-success">
+                                    <i class="bi bi-check-circle"></i> 
+                                    Tidak ada denda. Planet dikembalikan tepat waktu!
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <hr>
+                    <div class="d-flex gap-2">
+                        @if($rental->status == 'ongoing')
+                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#returnModal">
+                                <i class="bi bi-arrow-return-left"></i> Kembalikan Planet
+                            </button>
+                        @endif
+                        <a href="{{ route('admin.rentals.index') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Kembali ke Daftar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Planet Image -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-dark">
+                    <h5 class="mb-0 text-white"><i class="bi bi-image"></i> Gambar Planet</h5>
+                </div>
+                <div class="card-body text-center p-0">
+                    @if($rental->unit->image_url)
+                        <img src="{{ $rental->unit->image_url }}" 
+                             alt="{{ $rental->unit->name }}" 
+                             class="img-fluid">
+                    @else
+                        <div class="py-5">
+                            <i class="bi bi-image" style="font-size: 60px; color: #6c757d;"></i>
+                            <p class="text-muted mt-2">Tidak ada gambar</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Timeline -->
+            <div class="card shadow">
+                <div class="card-header bg-secondary">
+                    <h5 class="mb-0 text-white"><i class="bi bi-clock-history"></i> Timeline</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                            <strong>Rental dibuat</strong><br>
+                            <small class="text-muted">{{ $rental->created_at->format('d M Y, H:i') }}</small>
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-calendar-event text-primary"></i>
+                            <strong>Tanggal sewa</strong><br>
+                            <small class="text-muted">
+                                @if($rental->rental_date)
+                                    {{ $rental->rental_date->format('d M Y') }}
+                                @else
+                                    -
+                                @endif
+                            </small>
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-calendar-x {{ $rental->due_date && $rental->due_date->isPast() && $rental->status == 'ongoing' ? 'text-danger' : 'text-warning' }}"></i>
+                            <strong>Jatuh tempo</strong><br>
+                            <small class="text-muted">
+                                @if($rental->due_date)
+                                    {{ $rental->due_date->format('d M Y') }}
+                                @else
+                                    -
+                                @endif
+                            </small>
+                        </li>
+                        @if($rental->return_date)
+                        <li>
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                            <strong>Planet dikembalikan</strong><br>
+                            <small class="text-muted">{{ $rental->return_date->format('d M Y, H:i') }}</small>
+                        </li>
+                        @else
+                        <li>
+                            <i class="bi bi-hourglass-split text-muted"></i>
+                            <strong>Belum dikembalikan</strong>
+                        </li>
+                        @endif
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Return Modal -->
+@if($rental->status == 'ongoing')
+<div class="modal fade" id="returnModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h5 class="modal-title text-white">Konfirmasi Pengembalian</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ route('admin.rentals.return', $rental->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> 
+                        Yakin ingin mengembalikan planet <strong>{{ $rental->unit->name }}</strong>?
+                    </div>
+                    
+                    <table class="table table-borderless">
+                        <tr>
+                            <td><strong>Member:</strong></td>
+                            <td>{{ $rental->user->name }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Planet:</strong></td>
+                            <td>{{ $rental->unit->name }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Jatuh Tempo:</strong></td>
+                            <td>
+                                @if($rental->due_date)
+                                    {{ $rental->due_date->format('d/m/Y') }}
+                                @else
+                                    -
+                                @endif
+                            </td>
+                        </tr>
+                        @if($rental->due_date && $rental->due_date->isPast())
+                            <tr class="table-danger">
+                                <td><strong>Keterlambatan:</strong></td>
+                                <td class="text-danger fw-bold">{{ $rental->due_date->diffInDays(now()) }} hari</td>
+                            </tr>
+                            <tr class="table-danger">
+                                <td><strong>Total Denda:</strong></td>
+                                <td class="text-danger fw-bold">Rp {{ number_format($rental->due_date->diffInDays(now()) * 100000, 0, ',', '.') }}</td>
+                            </tr>
+                        @else
+                            <tr class="table-success">
+                                <td colspan="2" class="text-success text-center">
+                                    <i class="bi bi-check-circle"></i> Tepat waktu - tidak ada denda
+                                </td>
+                            </tr>
+                        @endif
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-circle"></i> Ya, Kembalikan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
+@endsection

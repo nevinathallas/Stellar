@@ -12,40 +12,48 @@
     <!-- Statistics Cards -->
     <div class="row g-4 mb-4">
         <div class="col-md-3">
-            <div class="card text-white bg-primary">
-                <div class="card-body">
-                    <h6 class="card-title">Total Units</h6>
-                    <h2 class="mb-0">{{ $totalUnits }}</h2>
-                    <small>Planet tersedia</small>
+            <a href="{{ route('admin.units.index') }}" class="text-decoration-none">
+                <div class="card text-white bg-primary h-100" style="cursor: pointer; transition: transform 0.2s;">
+                    <div class="card-body">
+                        <h6 class="card-title"><i class="bi bi-globe"></i> Total Units</h6>
+                        <h2 class="mb-0">{{ $totalUnits }}</h2>
+                        <small>Planet tersedia</small>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-success">
-                <div class="card-body">
-                    <h6 class="card-title">Total Members</h6>
-                    <h2 class="mb-0">{{ $totalMembers }}</h2>
-                    <small>Anggota terdaftar</small>
+            <a href="{{ route('admin.users.index') }}" class="text-decoration-none">
+                <div class="card text-white bg-success h-100" style="cursor: pointer; transition: transform 0.2s;">
+                    <div class="card-body">
+                        <h6 class="card-title"><i class="bi bi-people"></i> Total Members</h6>
+                        <h2 class="mb-0">{{ $totalMembers }}</h2>
+                        <small>Anggota terdaftar</small>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-warning">
-                <div class="card-body">
-                    <h6 class="card-title">Active Rentals</h6>
-                    <h2 class="mb-0">{{ $activeRentals }}</h2>
-                    <small>Sedang disewa</small>
+            <a href="{{ route('admin.rentals.ongoing') }}" class="text-decoration-none">
+                <div class="card text-white bg-warning h-100" style="cursor: pointer; transition: transform 0.2s;">
+                    <div class="card-body">
+                        <h6 class="card-title"><i class="bi bi-clock"></i> Active Rentals</h6>
+                        <h2 class="mb-0">{{ $activeRentals }}</h2>
+                        <small>Sedang disewa</small>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-danger">
-                <div class="card-body">
-                    <h6 class="card-title">Overdue</h6>
-                    <h2 class="mb-0">{{ $overdueRentals }}</h2>
-                    <small>Terlambat</small>
+            <a href="{{ route('admin.rentals.ongoing') }}" class="text-decoration-none">
+                <div class="card text-white bg-danger h-100" style="cursor: pointer; transition: transform 0.2s;">
+                    <div class="card-body">
+                        <h6 class="card-title"><i class="bi bi-exclamation-triangle"></i> Overdue</h6>
+                        <h2 class="mb-0">{{ $overdueRentals }}</h2>
+                        <small>Terlambat</small>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 

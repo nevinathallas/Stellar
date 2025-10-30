@@ -5,8 +5,8 @@
     <div class="row justify-content-center">
         <div class="col-lg-6">
             <div class="card shadow">
-                <div class="card-header bg-warning text-dark">
-                    <h4 class="mb-0"><i class="bi bi-pencil"></i> Edit Kategori</h4>
+                <div class="card-header bg-warning">
+                    <h4 class="mb-0 text-dark"><i class="bi bi-pencil"></i> Edit Kategori</h4>
                 </div>
                 <div class="card-body p-4">
                     <form action="{{ route('admin.categories.update', $category) }}" method="POST">

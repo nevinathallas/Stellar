@@ -13,11 +13,20 @@
     <div class="row">
         <div class="col-lg-8">
             <div class="card planet-card shadow-lg">
+                <!-- Gambar Planet -->
+                @if($unit->image_url)
+                    <img src="{{ $unit->image_url }}" class="card-img-top" alt="{{ $unit->name }}" style="max-height: 400px; object-fit: cover;">
+                @else
+                    <div class="bg-secondary text-center" style="height: 400px; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-planet2 text-white" style="font-size: 8rem;"></i>
+                    </div>
+                @endif
+                
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-start mb-4">
                         <div>
                             <h2 class="display-5 fw-bold mb-2">
-                                <i class="bi bi-planet2 text-primary"></i> {{ $unit->name }}
+                                {{ $unit->name }}
                             </h2>
                             <p class="text-muted mb-0">Kode Unit: <strong>{{ $unit->code }}</strong></p>
                         </div>

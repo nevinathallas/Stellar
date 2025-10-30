@@ -37,7 +37,9 @@ class RentalController extends Controller
             ->orderBy('end_date', 'asc')
             ->get();
 
-        return view('admin.rentals.ongoing', compact('rentals'));
+        $ongoingRentals = $rentals; // Alias untuk view
+
+        return view('admin.rentals.ongoing', compact('rentals', 'ongoingRentals'));
     }
 
     /**

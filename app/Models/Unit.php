@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Unit extends Model
 {
-    protected $fillable = ['code', 'name', 'price_per_day', 'status'];
+    protected $fillable = ['code', 'name', 'image_url', 'price_per_day', 'status'];
 
     /**
      * Get categories for this unit

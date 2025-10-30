@@ -73,7 +73,8 @@ class RentalController extends Controller
 
         // Calculate end date
         $startDate = Carbon::parse($validated['start_date']);
-        $endDate = $startDate->copy()->addDays($validated['duration_days']);
+        $durationDays = (int) $validated['duration_days'];
+        $endDate = $startDate->copy()->addDays($durationDays);
 
         // Create rental
         Rental::create([
@@ -81,7 +82,7 @@ class RentalController extends Controller
             'unit_id' => $validated['unit_id'],
             'start_date' => $startDate,
             'end_date' => $endDate,
-            'duration_days' => $validated['duration_days'],
+            'duration_days' => $durationDays,
             'status' => 'ongoing',
         ]);
 
