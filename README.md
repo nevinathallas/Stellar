@@ -41,7 +41,7 @@ Sistem ini memungkinkan pengguna untuk menyewa unit planet (contoh: Planet Mars,
 ---
 
 ## 🧱 Screen Capture Skema Database
-![Database Schema](public/images/db-schema.png)
+![Database Schema](public/images/db-schema2.png)
 
 Keterangan tabel:
 - **users:** id, name, email, password, role, created_at, updated_at  
@@ -53,7 +53,7 @@ Keterangan tabel:
 ---
 
 ## 🎥 Screen Recorder Demo (Work in Progress)
-📹 [Tautan Video Demo Website Sewa Planet](https://drive.google.com/file/d/DEMO_LINK)
+📹 [Tautan Video Demo Website Sewa Planet](https://drive.google.com/file/d/1j6a-9k3lJUf2RK8oFeINdrSJa31wfwrB/view?usp=drive_link)
 
 Video berisi penjelasan alur penggunaan website:
 - Login dan register user  
